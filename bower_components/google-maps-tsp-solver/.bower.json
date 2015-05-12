@@ -1,0 +1,14 @@
+{
+  "name": "google-maps-tsp-solver",
+  "homepage": "https://github.com/henryalejo/google-maps-tsp-solver",
+  "_release": "e2414e7c5c",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "e2414e7c5c510eca48024f518e61ce217e444613"
+  },
+  "_source": "https://github.com/henryalejo/google-maps-tsp-solver.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/henryalejo/google-maps-tsp-solver.git",
+  "_direct": true
+}
