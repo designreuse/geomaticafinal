@@ -87,7 +87,7 @@
 		  	$scope.start=$scope.chicago;
 			$scope.stop=$scope.chicago;
 		  var mapOptions = {
-		  	heading: 180,
+		  	//heading: 180,
 		    zoom:12,
 		    center: $scope.bogota.coords
 		  };
@@ -100,12 +100,12 @@
 		  directionsDisplay.setMap(map);
 		  directionsDisplay.setPanel(document.getElementById("directionsPanel"));
 		  google.maps.event.addListener(map, 'click', function(event) {
-			  if ($scope.waypoints.length < 100) {
+			  if ($scope.waypoints.length < 28) {
 	          $scope.waypoints.push({ location: event.latLng, stopover: true });
 	          //$scope.destination = event.latLng;
 	          addMarker( event.latLng);
 	        } else {
-	          alert("Maximum number of waypoints reached");
+	          alert("Número máximo de puntos alcanzado!!");
 	        }
 			/*		  
 	      if ($scope.origin == "") {
@@ -128,10 +128,13 @@
 			});
 
 		  function addMarker(latlng) {
+			var color="";
+			var ascii=65;
+			if ($scope.markers.length>25 ){color="_green"; ascii=39;};
 		    $scope.markers.push(new google.maps.Marker({
 		      position: latlng, 
 		      map: map,
-		      icon: "http://maps.google.com/mapfiles/marker" + String.fromCharCode($scope.markers.length + 65) + ".png"
+			      icon: "http://maps.google.com/mapfiles/marker"+ color + String.fromCharCode($scope.markers.length + ascii) + ".png"
 		    }));
 			//tsp
 			tsp.addWaypoint(latlng,function (params) {
@@ -164,7 +167,11 @@
 		$scope.calcRoute = function () {
 			var timeoutcount=-1;
 			var requestarray= new Array();
-			var iterations= Math.ceil($scope.waypoints.length/10);
+			var iterations= 1;
+			if($scope.waypoints.length<=10)iterations=1;
+			else if(10<$scope.waypoints.length && $scope.waypoints.length<20)iterations=2;
+			else if(20<=$scope.waypoints.length && $scope.waypoints.length<29)iterations=3;
+			else iterations= Math.ceil($scope.waypoints.length/10);
 			var order=new Array();
 			//tsp
 		  
@@ -187,16 +194,10 @@
 				 //console.log("Para mirar el error mirar el request, el numrequest:"+ numrequest);
 				  var temp=new Array();
 				  var temprequest=numrequest;
-				  var end=(temprequest+1)*10;
-				  
+				  var end=((temprequest+1)*9)+1;				  
 				  var start=end-10;
-				  //console.log("Para mirar el error mirar el request, el numrequest:"+ numrequest);
-				  temp.push(tempwaypoints.slice(start,end));
-				  //console.log("the temp");
-				  //console.log(temp);
+				  temp.push(tempwaypoints.slice(start,end));				  
 				  var temporigin=temp[0][0].location;
-				  //console.log("Longitud del temp");
-				  //console.log(temp[0].length);
 				  var tempdestination=temp[0][temp[0].length-1].location;
 				  var tempstops=temp[0].slice(1,temp[0].length-1);
 				  
@@ -225,8 +226,7 @@
 						  //temprequest=numrequest;
 						  
 					    if (status == google.maps.DirectionsStatus.OK) {
-							//console.log("El response: ");
-						 //console.log(response);
+							
 						deferred.resolve(response);
 						combinedResults.push(deferred.promise);
 							
@@ -268,7 +268,7 @@
 					  )
 					
 										
-				  }, ((temprequest+1)*1000)-999 );	
+				  }, ((temprequest+1)*2000)-2000 );	
 				  //temprequest=numrequest;
 				  
 			  }
@@ -278,202 +278,16 @@
 			 //directionsDisplay.setDirections(combinedResults[1]);
 				     
 				      //$scope.getDistance(response.routes[0].legs);
-			 
-			 
+			
 			 
 		  	});
-			
 					  
-		  
-		
 		  $scope.clearMarkers ();
 		  //directionsDisplay.setDirections(combinedResults[1]);
 		  //createBluePolyline(combinedResults[1]);
 		};
 
-		
-		$scope.calcRoute3 = function () {
-			
-			var iterations= Math.ceil($scope.waypoints.length/10);
-			var order=new Array();
-			//tsp
-		  
-		  	tsp.solveAtoZ(function (params) {
-			  createPolyline(tsp.getGDirections());			  
-			  //console.log("En orden");
-			 //console.log(tsp.getOrder());
-			 order=tsp.getOrder();
-			 var tempwaypoints= new Array();
-			for (var index = 0; index < order.length; index++) {
-				
-				 tempwaypoints.push($scope.waypoints[order[index]]);
-				
-			}		
-			 	 //console.log("wayponits");
-				  //console.log($scope.waypoints);
-				  //console.log("tempway");
-				 //console.log(tempwaypoints);
-			 for (numrequest = 0; numrequest < iterations; numrequest++) {
-				 var temprequest=numrequest;
-				 //console.log("Para mirar el error mirar el request, el numrequest:"+ numrequest);
-				  var temp=new Array();
-				  var temprequest=numrequest;
-				  var end=(temprequest+1)*10;
-				  
-				  var start=end-10;
-				  //console.log("Para mirar el error mirar el request, el numrequest:"+ numrequest);
-				  temp.push(tempwaypoints.slice(start,end));
-				  //console.log("the temp");
-				  //console.log(temp);
-				  var temporigin=temp[0][0].location;
-				  //console.log("Longitud del temp");
-				  //console.log(temp[0].length);
-				  var tempdestination=temp[0][temp[0].length-1].location;
-				  var tempstops=temp[0].slice(1,temp[0].length-1);
-				  
-				  //console.log("el origen: ");
-				  //console.log(temporigin);
-				  
-				  //console.log("el destion: ");
-				  //console.log(tempdestination);
-				  //console.log("el stops: ");
-				  //console.log(tempstops);
-				  
-				  $scope.request = {
-					      origin:	temporigin,
-					      destination:tempdestination,
-					      
-					      travelMode: google.maps.TravelMode[$scope.sendMode],
-					      waypoints: tempstops,
-					      optimizeWaypoints: true
-			
-			      
-			  		};
-					/*  
-					$http.get("https://maps.googleapis.com/maps/api/directions/json?key=AIzaSyBKeftt9o3yj6eK7oro-mvAMqgetdf75Ck&",$scope.request).then( function(data){
-						combinedResults.push(data.data);
-					});	  */
-					
-				//console.log("Para mirar el error mirar el request, el numrequest:"+ numrequest);
-				console.log($scope.request);
-				console.log("Para mirar el error mirar el request, el numrequest:");
-				console.log(temprequest);
-				//temprequest=numrequest;
-				//$timeout( function () {
-				var deferred = $q.defer();	 
-					
-					  directionsService.route($scope.request, function(response, status) {
-						  //temprequest=numrequest;
-						  deferred.resolve(response);
-					    if (status == google.maps.DirectionsStatus.OK) {
-						combinedResults.push(deferred.promise);
-							
-						 console.log("combinedResults");
-						  console.log(combinedResults);
-						 
-						   combinedResults[numrequest].then(function (data) {
-							   //combinedResults.push(data);
-							   //console.log("Promesa numero: " );
-							   //console.log(temprequest);
-							   //temprequest=numrequest;
-							   //console.log("El data: ");
-							   //console.log(data);
-							   //createBluePolyline(data);
-							   //console.log(combinedResults);
-							   
-							   console.log(" longitud");
-							  console.log(combinedResults.length);
-							  if(combinedResults.length==(temprequest+1)){
-								  console.log("hola mundo");
-								  for (var index = 0; index < combinedResults.length; index++) {
-									  console.log(data);
-									   
-									   createBluePolyline(data);
-									  
-									  
-								  };
-								  
-								  
-							  };
-							   
-							   
-						   });
-				  				
-					    }//direction status
-					  }
-					  )
-					
-										
-				  //}, ((temprequest+1)*1000)-999 );	
-				  //temprequest=numrequest;
-				  
-			  }
-			  
-			 
-			  
-			 //directionsDisplay.setDirections(combinedResults[1]);
-				     
-				      //$scope.getDistance(response.routes[0].legs);
-			 
-			 
-			 
-		  	});
-			
-					  
-		  
-		
-		  $scope.clearMarkers ();
-		  //directionsDisplay.setDirections(combinedResults[1]);
-		  //createBluePolyline(combinedResults[1]);
-		};
-		
-		
-		$scope.calcRoute2 = function () {
-		  //var start = document.getElementById('start').value;
-		  //var end = document.getElementById('end').value;
-		  //console.log($scope.waypoints);
-		  //console.log("stop: "+ $scope.stop);
-		 
-		  $scope.request = {
-		      origin:$scope.origin,
-		      destination:$scope.destination,
-		      //origin:"chicago, il",
-		      //destination:"oklahoma city, ok",
-		      //origin:$scope.start,
-		      //destination:$scope.stop,
-		      //travelMode: google.maps.TravelMode.DRIVING,
-		      travelMode: google.maps.TravelMode[$scope.sendMode],
-		      waypoints: $scope.waypoints,
-		      optimizeWaypoints: true
 
-		      
-		  };
-		  //console.log("request.origin: "+ $scope.request.origin);
-		  //console.log("request.destina: "+ $scope.request.destination);
-		  
-		  directionsService.route($scope.request, function(response, status) {
-		    if (status == google.maps.DirectionsStatus.OK) {
-		      directionsDisplay.setDirections(response);
-			  
-		      //console.log(response);
-		      //console.log(response.routes[0].legs[0].distance.value);
-		      $scope.getDistance(response.routes[0].legs);
-		    }
-		  });
-		  
-		  //directionsDisplay.setDirections(tsp.getGDirections());
-		  
-		   //tsp
-		  
-		  tsp.solveAtoZ(function (params) {
-			  createPolyline(tsp.getGDirections());
-			  
-			   //console.log("En orden");
-			  //console.log(tsp.getOrder());
-		  });
-		  //
-		  $scope.clearMarkers ();
-		}
 
 		 $scope.clearMarkers = function () {
 		    for (var i = 0; i < $scope.markers.length; i++) {
