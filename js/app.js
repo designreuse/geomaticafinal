@@ -21,7 +21,9 @@
 		var directionsService = new google.maps.DirectionsService();
 		var map;
 		var tsp ;
-		var combinedResults=new Array();
+		var combinedResults	=	new Array();
+		var polylines	=	new Array();
+		var aditionalmarkers = new Array();
 		var rendererOptions = {
 			preserveViewport: true,         
 			//suppressMarkers:true,
@@ -45,6 +47,8 @@
 		$scope.modes;
 		$scope.sendMode="";
 		$scope.distance=0;
+		$scope.time=0;
+		
 		$scope.initialize = function () {
 		  directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 			$scope.chicago = { 
@@ -244,9 +248,9 @@
 							   //temprequest=numrequest;
 							   //console.log("El data: ");
 							   //console.log(data);
-							   createBluePolyline(response);
+							   createBluePolyline(data);
 							   //console.log(combinedResults);
-							   
+							   $scope.getDistanceTime(data.routes[0].legs);
 							   console.log(" longitud array promesas");
 							  console.log(combinedResults.length);
 							  
@@ -277,7 +281,7 @@
 			  
 			 //directionsDisplay.setDirections(combinedResults[1]);
 				     
-				      //$scope.getDistance(response.routes[0].legs);
+
 			
 			 
 		  	});
@@ -299,14 +303,18 @@
 
 		    
 		  };
-		  $scope.getDistance= function(values){
-		  	var temp=0;
+		  $scope.getDistanceTime= function(values){
+		  	var tempdistance=0;
+			var temptime=0;
 		  	angular.forEach(values, function(value, key) {
-			  temp=temp+value.distance.value;
+			  tempdistance=tempdistance+value.distance.value;
+			  temptime=temptime+value.duration.value;
+			  
 			});
-		  	$scope.distance=temp/1000;
-		  	$scope.$apply();
-		  }
+		  	$scope.distance=(tempdistance/1000) + $scope.distance ;
+			$scope.time=(temptime/60) + $scope.time ;
+		  	//$scope.$apply();
+		  };
 		   $scope.clearWaypoints = function() {
 		    
 		    $scope.origin="";
@@ -314,7 +322,7 @@
 			$scope.waypoints=[];
 			$scope.markers=[];
 		    directionsVisible = false;
-		  }
+		  };
 		  $scope.reset = function(){
 		  	$scope.clearMarkers ();		  
 		   $scope.boolChangeClass = false;
@@ -327,7 +335,16 @@
 		    directionsDisplay.setMap(map);
 		    directionsDisplay.setPanel(document.getElementById("map-canvas"));    
   			directionsDisplay.setPanel(document.getElementById("directionsPanel"));
-			    
+			deleteBluePolyline();
+			deleteAditionalmarkers();
+			//tsp=null;
+			//delete tsp;
+			tsp.startOver();
+		  	tsp.setAvoidHighways(false);
+			tsp.setTravelMode(google.maps.DirectionsTravelMode.DRIVING);
+			
+			$scope.distance=0;
+			$scope.time=0;    
 		  };
 		  
 		  
@@ -340,6 +357,7 @@
 			  });
 			
 			  line.setMap(map);
+			  polylines.push(line);
 			
 			  for (var i = 0; i < line.getPath().length; i++) {
 			      var marker = new google.maps.Marker({
@@ -347,8 +365,26 @@
 			          position: line.getPath().getAt(i),
 			          map: map
 			      });
+				  aditionalmarkers.push(marker);
 			  }
 			}
+			function deleteBluePolyline() {
+				angular.forEach(polylines, function(value, key) {
+					//console.log(value);
+			  		value.setMap(null);
+			  
+			});
+			polylines= new Array();
+			};
+			
+			function deleteAditionalmarkers() {
+				angular.forEach(aditionalmarkers, function(value, key) {
+					//console.log(value);
+			  		value.setMap(null);
+			  
+			});
+			aditionalmarkers= new Array();
+			};
 			function createBluePolyline(directionResult) {
 			  var line = new google.maps.Polyline({
 			      path: directionResult.routes[0].overview_path,
@@ -356,8 +392,10 @@
 			      strokeOpacity: 0.5,
 			      strokeWeight: 6
 			  });
-			
-			  line.setMap(map);
+				console.log(line);
+			  	line.setMap(map);
+  				//console.log(line);
+				polylines.push(line);
 			/*
 			  for (var i = 0; i < line.getPath().length; i++) {
 			      var marker = new google.maps.Marker({
@@ -375,7 +413,7 @@
 
 		google.maps.event.addDomListener(window, 'load', $scope.initialize);
 
-	})
+	});
 
 
 })();
