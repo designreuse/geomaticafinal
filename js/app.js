@@ -48,7 +48,7 @@
 		$scope.sendMode="";
 		$scope.distance=0;
 		$scope.time=0;
-		
+		$scope.calcBool=false;
 		$scope.initialize = function () {
 		  directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 			$scope.chicago = { 
@@ -154,8 +154,8 @@
 		}
 		$scope.click = function() {
         $scope.boolChangeClass = !$scope.boolChangeClass;
-        $scope.$apply();
-    }
+        //$scope.$apply();
+    };
 		
   		$scope.rotate90= function() {
 			  ///var heading = map.getHeading() || 0;
@@ -169,6 +169,7 @@
 		};
 
 		$scope.calcRoute = function () {
+			$scope.calcBool = true;
 			var timeoutcount=-1;
 			var requestarray= new Array();
 			var iterations= 1;
@@ -184,6 +185,9 @@
 			  //console.log("En orden");
 			 //console.log(tsp.getOrder());
 			 order=tsp.getOrder();
+			 
+			 console.log("Duaracione algoritmo");
+			 console.log(tsp.getDurations());
 			 var tempwaypoints= new Array();
 			for (var index = 0; index < order.length; index++) {
 				
@@ -226,8 +230,7 @@
 					  directionsServicetemp.route(requestarray[timeoutcount], function(response, status) {
 						  	console.log("Para mirar el request dentro del route:");	
 							console.log(request);
-						  
-						  //temprequest=numrequest;
+			
 						  
 					    if (status == google.maps.DirectionsStatus.OK) {
 							
@@ -237,17 +240,8 @@
 						 console.log("combinedResults:");
 						 console.log(combinedResults);
 						
-						 //console.log("El numrequest: ");
-						 //console.log(temprequest);
 						   combinedResults[combinedResults.length-1].then(function (data) {
-							   //console.log("El response: ");
-						 		//console.log(response);
-							   //combinedResults.push(data);
-							   //console.log("Promesa numero: " );
-							   //console.log(temprequest);
-							   //temprequest=numrequest;
-							   //console.log("El data: ");
-							   //console.log(data);
+						
 							   createBluePolyline(data);
 							   //console.log(combinedResults);
 							   $scope.getDistanceTime(data.routes[0].legs);
@@ -276,19 +270,11 @@
 				  //temprequest=numrequest;
 				  
 			  }
-			  
-			 
-			  
-			 //directionsDisplay.setDirections(combinedResults[1]);
-				     
-
 			
 			 
 		  	});
 					  
 		  $scope.clearMarkers ();
-		  //directionsDisplay.setDirections(combinedResults[1]);
-		  //createBluePolyline(combinedResults[1]);
 		};
 
 
@@ -328,7 +314,7 @@
 		   $scope.boolChangeClass = false;
 		   $scope.distance=0;
 		    $scope.clearWaypoints();
-			
+			$scope.calcBool=false;
 		    directionsDisplay.setMap(null);
 		    directionsDisplay.setPanel(null);
 		    directionsDisplay = new google.maps.DirectionsRenderer();
@@ -337,6 +323,7 @@
   			directionsDisplay.setPanel(document.getElementById("directionsPanel"));
 			deleteBluePolyline();
 			deleteAditionalmarkers();
+			combinedResults	=	new Array();
 			//tsp=null;
 			//delete tsp;
 			tsp.startOver();

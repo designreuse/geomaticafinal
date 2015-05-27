@@ -4,6 +4,19 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Directions service</title>
+    
+    <link rel="stylesheet" href="css/custom.css">
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&API_key=AIzaSyBKeftt9o3yj6eK7oro-mvAMqgetdf75Ck"></script>
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+
+    <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+   
+    <script type="text/javascript" src="bower_components/google-maps-tsp-solver/BpTspSolver.js"></script>
+    <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
     <style>
       html, body, #map-canvas {
         height: 100%;
@@ -21,15 +34,6 @@
         border: 1px solid #999;
       }
     </style>
-    <link rel="stylesheet" href="css/custom.css">
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&API_key=AIzaSyBKeftt9o3yj6eK7oro-mvAMqgetdf75Ck"></script>
-    <script type="text/javascript" src="bower_components/google-maps-tsp-solver/tsp.js"></script>
-    <script type="text/javascript" src="bower_components/google-maps-tsp-solver/BpTspSolver.js"></script>
-    <script type="text/javascript" src="bower_components/angular/angular.js"></script>
-    <script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script type="text/javascript" src="js/app.js"></script>
-    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
-
   </head>
   <body ng-controller="mapsController">
 
@@ -47,9 +51,9 @@
   </div> 
  
     <div id="panel">
-     <button ng-click="calcRoute()">Calcular</button>
+     <button class="btn btn-success" ng-click="calcRoute()" ng-disabled="{{calcBool}}">Calcular</button>
     <button ng-show="false" ng-click="rotate90()" >Rotate</button>
-    <button ng-click="reset()" >Reset</button>
+    <button class="btn btn-warning" ng-click="reset()" >Reset</button>
         
     Ciudad: 
     <select ng-model="centercity" ng-options="city.name for city in cities" ng-change="setCenter(centercity.coords)" ></select>
