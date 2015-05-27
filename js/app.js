@@ -185,7 +185,7 @@
 			  //console.log("En orden");
 			 //console.log(tsp.getOrder());
 			 order=tsp.getOrder();
-			 
+				$scope.clearMarkers ();
 			 console.log("Duaracione algoritmo");
 			 console.log(tsp.getDurations());
 			 var tempwaypoints= new Array();
@@ -228,8 +228,8 @@
 				var deferred = $q.defer();	 
 				var	directionsServicetemp = new google.maps.DirectionsService();
 					  directionsServicetemp.route(requestarray[timeoutcount], function(response, status) {
-						  	console.log("Para mirar el request dentro del route:");	
-							console.log(request);
+						  	//console.log("Para mirar el request dentro del route:");	
+							//console.log(request);
 			
 						  
 					    if (status == google.maps.DirectionsStatus.OK) {
@@ -237,27 +237,18 @@
 						deferred.resolve(response);
 						combinedResults.push(deferred.promise);
 							
-						 console.log("combinedResults:");
-						 console.log(combinedResults);
+						 //console.log("combinedResults:");
+						 //console.log(combinedResults);
 						
 						   combinedResults[combinedResults.length-1].then(function (data) {
 						
 							   createBluePolyline(data);
 							   //console.log(combinedResults);
 							   $scope.getDistanceTime(data.routes[0].legs);
-							   console.log(" longitud array promesas");
-							  console.log(combinedResults.length);
+							   //console.log(" longitud array promesas");
+							  //console.log(combinedResults.length);
 							  
-							 /*
-							  if(combinedResults.length==(temprequest+1)){
-								  console.log("hola mundo del dibujo");
-								  for (var index = 0; index < combinedResults.length; index++) {
-									  console.log(data);									   
-									   createBluePolyline(data);
-									   };								  
-								   };
-								  */ 
-								   
+								
 								   
 							 });
 				  				
@@ -274,7 +265,7 @@
 			 
 		  	});
 					  
-		  $scope.clearMarkers ();
+		  
 		};
 
 

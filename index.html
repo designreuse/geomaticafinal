@@ -47,7 +47,20 @@
       
 
     </div>
-    <div id="directionsPanel" style="background:white; left: 410px; width:100%; height: 100%; overflow: auto"></div>
+    <div id="directionsPanel" class="conatiner" style="background:white; left: 410px; width:100%; height: 100%; overflow: auto">
+      <h2>
+        <label style="display: block;" class="label label-info">
+        Distancia: {{distance | number : 1}} Kms 
+        </label>
+        <label style="display: block;" class="label label-info">
+          
+        Tiempo: {{time | number : 1 }} min </label>
+        <label style="display: block;" class="label label-info">
+          
+        # Paradas: {{markers.length}} </label>
+      </h2>  
+    
+    </div>
   </div> 
  
     <div id="panel">
@@ -59,8 +72,7 @@
     <select ng-model="centercity" ng-options="city.name for city in cities" ng-change="setCenter(centercity.coords)" ></select>
     Modo de Viaje:
      <select ng-model="mymode" ng-options="mode.name for mode in modes" ng-change="setMode(mymode.value)" ></select>
-    Distancia: {{distance | number : 1}} Kms
-    Tiempo: {{time | number : 1 }} min
+    <h3 ng-show="false"><label style="display: block;" class="label label-info">Distancia: {{distance | number : 1}} Kms Tiempo: {{time | number : 1 }} min </label> </h3>  
     </div>
     <div id="map-canvas"></div>
   </body>
